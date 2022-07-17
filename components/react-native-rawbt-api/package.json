@@ -1,7 +1,6 @@
-
 {
   "name": "react-native-rawbt-api",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "rawbtapi.ts",
   "scripts": {
@@ -11,8 +10,5 @@
     "react-native"
   ],
   "author": "",
-  "license": "",
-  "peerDependencies": {
-    "react-native": "^0.41.2"
-  }
+  "license": ""
 }
