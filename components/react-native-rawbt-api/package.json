@@ -1,0 +1,18 @@
+
+{
+  "name": "react-native-rawbt-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "rawbtapi.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": "",
+  "license": "",
+  "peerDependencies": {
+    "react-native": "^0.41.2"
+  }
+}
