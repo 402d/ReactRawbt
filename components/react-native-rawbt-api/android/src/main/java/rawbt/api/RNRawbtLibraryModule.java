@@ -119,21 +119,22 @@ public class RNRawbtLibraryModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void printJob(@NonNull String jobGSON){
+  public void printJob(@NonNull String jobGSON, Promise promise){
     if(serviceRawBT == null){
       if(!RawbtApiHelper.isServiceInstalled(reactContext)){
-        handlePrintError(reactContext.getString(R.string.rawb_not_installed));
+        promise.reject("Error", reactContext.getString(R.string.rawb_not_installed));
         return;
       }
-      handlePrintError(reactContext.getString(R.string.rawbt_please_wait));
+      promise.reject("Error", reactContext.getString(R.string.rawbt_please_wait));
       return;
     }
     try{
       serviceRawBT.printRawbtPrintJob(jobGSON);
+      promise.resolve(true);
     }catch (SecurityException s){
-      handlePrintError(reactContext.getString(R.string.rawbt_permission_not_granted));
+      promise.reject("Error", reactContext.getString(R.string.rawbt_permission_not_granted));
     }catch (Exception e){
-      handlePrintError(e.getLocalizedMessage());
+      promise.reject("Error", "Exception: "  + e.getLocalizedMessage());
     }
   }
 
@@ -178,7 +179,7 @@ public class RNRawbtLibraryModule extends ReactContextBaseJavaModule {
       promise.reject("Error", "Failed to decode Bitmap: " + e);
       e.printStackTrace();
     } catch (Exception e) {
-      promise.reject("Error", "Exception: " + e);
+      promise.reject("Error", "Exception: " + e.getLocalizedMessage());
       e.printStackTrace();
     }
   }

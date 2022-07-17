@@ -69,7 +69,7 @@ const printHello = () => {
 
   job.println("Hello,World!");
 
-  RawbtApi.printJob(job.GSON());
+  RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
 };
 
 const demoRichFormat = () => {
@@ -111,7 +111,7 @@ const demoRichFormat = () => {
     attrStr.setDoubleHeight(true)
   );
 
-  RawbtApi.printJob(job.GSON());
+  RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
 };
 
 // -------------------------
@@ -221,7 +221,7 @@ const demoFonts = () => {
   );
   job.ln();
 
-  RawbtApi.printJob(job.GSON());
+  RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
 };
 
 // ------------------------------------------
@@ -352,7 +352,7 @@ const demoBarcode = () => {
   );
   job.ln(2);
 
-  RawbtApi.printJob(job.GSON());
+  RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
 };
 
 const demoBarcode2 = () => {
@@ -403,7 +403,7 @@ const demoBarcode2 = () => {
   job.barcode("RawBT402d", a.setType(BARCODE_CODE128).build());
   job.ln();
 
-  RawbtApi.printJob(job.GSON());
+  RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
 };
 
 // -----------------------------------
@@ -463,7 +463,7 @@ const demoImages = () => {
       job.println("Rotate");
       job.ln(3);
 
-      RawbtApi.printJob(job.GSON());
+      RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
     })
     .catch((err) => console.log(err));
 };

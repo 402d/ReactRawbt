@@ -11,7 +11,7 @@ type RawBtApiType = {
    * 
    * @example RawBtApi.printJob(job.GSON());
    */
-  printJob(gson:string):void;
+  printJob(gson:string): Promise<boolean>;
 
   /**
    * Receive images bytes for job.image()
@@ -24,8 +24,9 @@ type RawBtApiType = {
 
 export default RNRawbtLibraryModule as RawBtApiType;
 
-
-  // ----- Constants ----------
+  // ===========================================================================================
+  // ## Constants 
+  // ==========================================================================================
 
   // aligment
   export const ALIGNMENT_LEFT = "left";
@@ -357,8 +358,9 @@ export default RNRawbtLibraryModule as RawBtApiType;
     }
   }
 
-  // -------- print job --------------
-
+  /**
+   * print job
+   */
   export interface iRawBTPrintJob {
     commands: Command[];
     copies: number;
