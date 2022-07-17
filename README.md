@@ -20,9 +20,9 @@ RawBT - служба печати для андроида на термопри�
 
 
 ## How run examle
-'''
+```
 git clone https://github.com/402d/ReactRawbt.git
 cd ReactRawbt
 npm install
 expo run:android
-'''
+```
