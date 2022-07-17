@@ -26,3 +26,13 @@ cd ReactRawbt
 npm install
 expo run:android
 ```
+## Preview print out
+RawBT может использоваться для отладки печатных форм без наличия самого термопринтера. 
+В приложении реализован режим виртуального принтера. 
+Доступен моментальный просмотр и сохранение изображений в галерею. 
+Подробнее об эмулируемых командах
+https://github.com/402d/Virtual_POS_printer
+
+
+## Install RawBT
+https://play.google.com/store/apps/details?id=ru.a402d.rawbtprinter
