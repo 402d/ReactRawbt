@@ -353,7 +353,6 @@ const demoImages = () => {
   }).catch(err => console.log(err));;
 }
 
-const DEFAULT_IMAGE = Image.resolveAssetSource(require('./assets/rawbt.png')).uri;
 
 export default function App() {
   // --------------
@@ -369,7 +368,6 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
     <ScrollView>
-      <Text>{DEFAULT_IMAGE}</Text>
       <Image source={require('./assets/rawbt.png')} style={styles.imgMain} />
       <View style={styles.mainpart}>
         <Text style={styles.p}>The RawBT program is over four years old. Operating system requirements are changing. Technical debt has accumulated as new features are added. It's time for a big refactoring of the code. This is an intermediate version. Its main purpose is to check compatibility with the previous integration methods.</Text>   
