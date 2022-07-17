@@ -1,9 +1,27 @@
 import { NativeModules } from 'react-native';
 const { RNRawbtLibraryModule } = NativeModules;
+
+/**
+ * RawBT - the print driver for android on a thermal printer 
+ */
 type RawBtApiType = {
+  /**
+   * Send print job to service 
+   * @param {string} gson - see RawBTPrintJob
+   * 
+   * @example RawBtApi.printJob(job.GSON());
+   */
   printJob(gson:string):void;
+
+  /**
+   * Receive images bytes for job.image()
+   * 
+   * @param uri images uri 
+   * @example Image.resolveAssetSource(require("./assets/bwlogo.webp")).uri; 
+   */
   getImageBase64String(uri: string): Promise<string>;
 }
+
 export default RNRawbtLibraryModule as RawBtApiType;
 
 
@@ -58,6 +76,18 @@ export default RNRawbtLibraryModule as RawBtApiType;
   export const DITHERING_127 = 9;
 
   // ----- Attributes --------
+
+
+  /**
+   * Text format
+   *
+   * @param {string} alignment  ALIGNMENT_LEFT,ALIGNMENT_CENTER,ALIGNMENT_RIGHT
+   * @param {boolean} bold
+   * @param {boolean} doubleHeight
+   * @param {boolean} doubleWidth
+   *
+   * @returns {AttributesString}
+   */
   export class AttributesString {
     alignment: string = ALIGNMENT_LEFT;
     bold: boolean = false;
@@ -345,6 +375,7 @@ export default RNRawbtLibraryModule as RawBtApiType;
     // not for GSON
     defaultAttrString:AttributesString;
     defaultAttrImage:AttributesImage;
+    defaultAttrBarcode:AttributesBarcode;
 
     getDefaultAttrString() {
       if (this.defaultAttrString === undefined) {
@@ -358,6 +389,13 @@ export default RNRawbtLibraryModule as RawBtApiType;
         return new AttributesImage();
       }
       return this.defaultAttrImage;
+    }
+
+    getDefaultAttrBarcode(){
+      if (this.defaultAttrBarcode === undefined) {
+        return new AttributesBarcode();
+      }
+      return this.defaultAttrBarcode;
     }
 
     add(command: Command) {
@@ -445,6 +483,7 @@ export default RNRawbtLibraryModule as RawBtApiType;
     gsonReplacer(key, value) {
       if (key == "defaultAttrString") return;
       else if (key == "defaultAttrImage") return;
+      else if (key == "defaultAttrBarcode") return;
       else return value;
     }
 
