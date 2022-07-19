@@ -64,7 +64,7 @@ if (subscription === undefined) {
 // -------------------------
 // First demo
 // --------------------------
-const printHello = () => {
+const printHello = async () => {
   let job = new RawBTPrintJob();
 
   job.println("Hello,World!");
@@ -72,7 +72,7 @@ const printHello = () => {
   RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
 };
 
-const demoRichFormat = () => {
+const demoRichFormat = async () => {
   let job = new RawBTPrintJob();
 
   // attr for title
@@ -118,7 +118,7 @@ const demoRichFormat = () => {
 //  Fonts demo
 // -------------------------
 
-const demoFonts = () => {
+const demoFonts = async () => {
   let job = new RawBTPrintJob();
 
   // default values
@@ -147,17 +147,11 @@ const demoFonts = () => {
 
   job.println("Font sizes", attrStrTitle);
 
-  let fAw1h1 = new AttributesString().setPrinterFont(FONT_A);
-  let fAw1h2 = new AttributesString()
-    .setPrinterFont(FONT_A)
-    .setDoubleHeight(true);
-  let fAw2h1 = new AttributesString()
-    .setPrinterFont(FONT_A)
-    .setDoubleWidth(true);
-  let fAw2h2 = new AttributesString()
-    .setPrinterFont(FONT_A)
-    .setDoubleHeight(true)
-    .setDoubleWidth(true);
+  let fAw1h1 = new AttributesString();
+  let fAw1h2 = new AttributesString(undefined,undefined,true,false);
+  let fAw2h1 = new AttributesString(undefined,undefined,false,true);
+  let fAw2h2 = new AttributesString(undefined,undefined,true,true);
+
   let fBw1h1 = new AttributesString().setPrinterFont(FONT_B);
   let fBw1h2 = new AttributesString()
     .setPrinterFont(FONT_B)
@@ -228,13 +222,11 @@ const demoFonts = () => {
 // DEMO BarCode
 // -------------------------------------------
 
-const demoBarcode = () => {
+const demoBarcode = async () => {
   let job = new RawBTPrintJob();
 
   // attr for title
-  let attrStrTitle = new AttributesString()
-    .setAlignment(ALIGNMENT_CENTER)
-    .setDoubleHeight(true);
+  let attrStrTitle = new AttributesString(ALIGNMENT_CENTER,false,true);
 
   job.println("Barcode", attrStrTitle);
   job.println("HRI & Alignment");
@@ -432,18 +424,15 @@ const demoImages = () => {
       job.println("Scale 16(default) - full width");
       job.ln();
 
-      let im50center = new AttributesImage()
-        .setScale(8)
-        .setAlignment(ALIGNMENT_CENTER)
-        .setGraphicFilter(DITHERING_SF);
+      let im50center = new AttributesImage(ALIGNMENT_CENTER,8);
+
       job.image(base64String, im50center);
       job.ln();
       job.println("Scale: 8(50%). Alignment: center");
       job.ln();
 
-      let im75right = new AttributesImage()
-        .setScale(12)
-        .setAlignment(ALIGNMENT_RIGHT);
+      let im75right = new AttributesImage(ALIGNMENT_RIGHT,12);
+
       job.image(base64String, im75right);
       job.ln();
       job.println("Scale: 12(75%). Alignment: right");

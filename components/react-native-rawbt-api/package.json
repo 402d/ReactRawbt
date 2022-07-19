@@ -9,6 +9,9 @@
   "keywords": [
     "react-native"
   ],
+  "dependencies": {
+    "react-native": "0.68.2"
+  },
   "author": "",
   "license": ""
 }
