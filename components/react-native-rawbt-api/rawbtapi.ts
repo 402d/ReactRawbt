@@ -257,9 +257,11 @@ export class AttributesBarcode {
     alignment: string = ALIGNMENT_LEFT;
     // -----------------
     constructor(
-        type: string = BARCODE_EAN13
+        type: string = BARCODE_EAN13,
+        alignment: string = ALIGNMENT_LEFT
     ) {
         this.type = type;
+        this.alignment = alignment;
     }
 
     setType(type: string) {
@@ -307,7 +309,7 @@ export class AttributesBarcode {
 /**
  * AttributesQRcode
  */
-class AttributesQRcode {
+export class AttributesQRcode {
     // properties for GSON
     alignment: string = ALIGNMENT_CENTER;
     multiply: number = 3;
