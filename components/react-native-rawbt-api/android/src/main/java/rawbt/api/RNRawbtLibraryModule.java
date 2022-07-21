@@ -14,10 +14,12 @@ import android.util.Base64;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.io.ByteArrayOutputStream;
@@ -26,7 +28,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import rawbt.api.RawbtApiHelper;
 import rawbt.sdk.ICallback;
 import rawbt.sdk.IRawBtPrintService;
 
@@ -139,24 +140,53 @@ public class RNRawbtLibraryModule extends ReactContextBaseJavaModule {
   }
 
   private final String eventName = "RawBT";
+  public final class EventInfo {
+    String status = "unknown";
+    Float progress = 0f;
+    String message = "";
+
+    public EventInfo(String status) {
+      this.status = status;
+      this.message = status;
+    }
+
+    public EventInfo(String status, String message) {
+      this.status = status;
+      this.message = message;
+    }
+
+    public EventInfo(String status, Float progress) {
+      this.status = status;
+      this.message = status;
+      this.progress = progress;
+    }
+
+    public WritableMap get(){
+      WritableMap params = Arguments.createMap();
+      params.putString("status",this.status);
+      params.putString("message",this.message);
+      params.putInt("progress",(int)(this.progress * 100));
+      return params;
+    }
+  }
 
   protected void handleServiceConnected(){
 
-    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName,"connected");
+    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName,new EventInfo("connected").get());
 
   }
   protected void handlePrintSuccess(){
-    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName,"success");
+    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName,new EventInfo("success").get());
 
   }
   protected void handlePrintCancel(){
-    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName,"cancel");
+    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName,new EventInfo("canceled").get());
   }
   protected void handlePrintError(String message){
-    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName,message);
+    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName,new EventInfo("error",message).get());
   }
   protected void handlePrintProgress(Float p){
-    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName,"progress "+p);
+    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName,new EventInfo("progress",p).get());
   }
 
   // --------------

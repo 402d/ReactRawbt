@@ -10,13 +10,14 @@ import {
     Image,
     Text,
     View,
+    Alert
 } from "react-native";
 
 // -------------------------------------------
 // RawBT API
 // -------------------------------------------
-import RawbtApi, {CommandLeftRightText} from 'react-native-rawbt-api';
-import {
+import RawbtApi,
+{
     RawBTPrintJob,
     AttributesString,
     AttributesBarcode,
@@ -49,17 +50,32 @@ import {
     BARCODE_GS1_DATABAR_LIMITED,
     BARCODE_GS1_DATABAR_EXPANDED,
 } from 'react-native-rawbt-api';
+import PrinterProgress from "react-native-rawbt-api/print_progres";
+
 
 
 const {ReactNativeLoading} = NativeModules;
+
+// --------------------------------
+// RawBT events listener
+// --------------------------------
 let subscription;
 if (subscription === undefined) {
     const loadingManagerEmitter = new NativeEventEmitter(ReactNativeLoading);
-    subscription = loadingManagerEmitter.addListener("RawBT", (reminder) => {
-        console.log(reminder);
+    subscription = loadingManagerEmitter.addListener("RawBT", ({status,progress,message}) => {
+        console.log(status+" "+progress+" "+message);
+        // your code if it needs more <PrinterProgress />
     });
 }
 
+const showError = (error:string) => {
+    Alert.alert('Print error',error,[
+        {
+            text: 'Cancel',
+            style: 'cancel',
+        },
+    ]);
+}
 
 // -------------------------
 // First demo
@@ -69,7 +85,7 @@ const printHello = async () => {
 
     job.println("Hello,World!");
 
-    RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
+    RawbtApi.printJob(job.GSON()).catch((err) => showError(err.message));
 };
 
 /**
@@ -115,7 +131,7 @@ const demoRichFormat = async () => {
         attrStr.setDoubleHeight(true)
     );
 
-    RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
+    RawbtApi.printJob(job.GSON()).catch((err) => showError(err.message));
 };
 
 /**
@@ -131,65 +147,74 @@ class ReceiptItem {
 }
 
 const demoReceipt = async () => {
-    let job = new RawBTPrintJob();
+    try {
+        let job = new RawBTPrintJob();
 
-    const items: ReceiptItem[] = [
-        {name:'Example item #1',price:'4.00'},
-        {name:'Another thing',price:'3.50'},
-        {name:'Something else',price:'1.00'},
-        {name:'A final item',price:'4.45'},
-    ];
-    const subtotal = new ReceiptItem('Subtotal','12.95');
-    const tax = new ReceiptItem('A local tax','1.30')
-    const total = new ReceiptItem('Total','14.25');
-    const date = "Monday 6th of April 2015 02:56:25 PM";
-
-
-    const attrBold = new AttributesString().setBold(true);
-    const attrCenter = new AttributesString(ALIGNMENT_CENTER);
-    const attrBig = new AttributesString(ALIGNMENT_CENTER,false,false,true);
-
-    /* image */
-    let imageUri = Image.resolveAssetSource(require("./assets/bwlogo.webp")).uri;
-    let base64String = await RawbtApi.getImageBase64String(imageUri);
-    job.image(base64String,new AttributesImage(ALIGNMENT_CENTER, 8));
-
-    /* header */
-    job.println("ExampleMart Ltd", attrBig);
-    job.println("Shop No. 42",attrCenter);
-    job.ln();
-    job.println("SALES INVOICE",new AttributesString(ALIGNMENT_CENTER,true));
-    job.ln();
-
-    /* items */
-    items.forEach((item) => job.leftRightText(item.name,item.price));
-
-    /* subtotal & total */
-    job.drawLine('-');
-    job.leftRightTextWithFormat(subtotal.name,subtotal.price,attrBold);
-    job.ln();
-    job.leftRightText(tax.name,tax.price);
-    job.leftRightTextWithFormat(total.name,total.price,attrBig);
-    job.ln(2);
-
-    /* footer */
-    job.println("Thank you for shopping",attrCenter);
-    job.println("at ExampleMart",attrCenter);
-    job.println("For trading hours,",attrCenter);
-    job.println("please visit example.com",attrCenter);
-    job.ln(2);
-    job.println(date);
+        const items: ReceiptItem[] = [
+            {name: 'Example item #1', price: '4.00'},
+            {name: 'Another thing', price: '3.50'},
+            {name: 'Something else', price: '1.00'},
+            {name: 'A final item', price: '4.45'},
+        ];
+        const subtotal = new ReceiptItem('Subtotal', '12.95');
+        const tax = new ReceiptItem('A local tax', '1.30')
+        const total = new ReceiptItem('Total', '14.25');
+        const date = "Monday 6th of April 2015 02:56:25 PM";
 
 
-    /* QR */
-    job.qrcode("https://github.com/402d/ReactRawbt", new AttributesQRcode(ALIGNMENT_CENTER,5));
-    job.ln();
+        const attrBold = new AttributesString().setBold(true);
+        const attrCenter = new AttributesString(ALIGNMENT_CENTER);
+        const attrBig = new AttributesString(ALIGNMENT_CENTER, false, false, true);
 
-    /* Barcode */
-    job.barcode("ABC", new AttributesBarcode(BARCODE_CODE39,ALIGNMENT_CENTER).setHri(HRI_BELOW));
-    job.ln();
+        /* image */
+        let imageUri = Image.resolveAssetSource(require("./assets/bwlogo.webp")).uri;
+        let base64String = await RawbtApi.getImageBase64String(imageUri);
+        job.image(base64String, new AttributesImage(ALIGNMENT_CENTER, 8));
 
-    RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
+        /* header */
+        job.println("ExampleMart Ltd", attrBig);
+        job.println("Shop No. 42", attrCenter);
+        job.ln();
+        job.println("SALES INVOICE", new AttributesString(ALIGNMENT_CENTER, true));
+        job.ln();
+
+        /* items */
+        items.forEach((item) => job.leftRightText(item.name, item.price));
+
+        /* subtotal & total */
+        job.drawLine('-');
+        job.leftRightTextWithFormat(subtotal.name, subtotal.price, attrBold);
+        job.ln();
+        job.leftRightText(tax.name, tax.price);
+        job.leftRightTextWithFormat(total.name, total.price, attrBig);
+        job.ln(2);
+
+        /* footer */
+        job.println("Thank you for shopping", attrCenter);
+        job.println("at ExampleMart", attrCenter);
+        job.println("For trading hours,", attrCenter);
+        job.println("please visit example.com", attrCenter);
+        job.ln(2);
+        job.println(date);
+
+
+        /* QR */
+        job.qrcode("https://github.com/402d/ReactRawbt", new AttributesQRcode(ALIGNMENT_CENTER, 5));
+        job.ln();
+
+        /* Barcode */
+        job.barcode("ABC", new AttributesBarcode(BARCODE_CODE39, ALIGNMENT_CENTER).setHri(HRI_BELOW));
+        job.ln();
+
+        /* Cut paper */
+        job.ln(4); // feed paper for cut position (if need)
+        job.cut();
+
+        RawbtApi.printJob(job.GSON()).catch((err) => showError(err.message));
+    }catch(err){
+        // images error
+        showError(err.message);
+    }
 }
 
 // -------------------------
@@ -293,7 +318,7 @@ const demoFonts = async () => {
     );
     job.ln();
 
-    RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
+    RawbtApi.printJob(job.GSON()).catch((err) => showError(err.message));
 };
 
 // ------------------------------------------
@@ -422,7 +447,7 @@ const demoBarcode = async () => {
     );
     job.ln(2);
 
-    RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
+    RawbtApi.printJob(job.GSON()).catch((err) => showError(err.message));
 };
 
 const demoBarcode2 = () => {
@@ -473,7 +498,7 @@ const demoBarcode2 = () => {
     job.barcode("RawBT402d", a.setType(BARCODE_CODE128).build());
     job.ln();
 
-    RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
+    RawbtApi.printJob(job.GSON()).catch((err) => showError(err.message));
 };
 
 // -----------------------------------
@@ -530,9 +555,9 @@ const demoImages = async () => {
         job.println("Rotate");
         job.ln(3);
 
-        RawbtApi.printJob(job.GSON()).catch((err) => console.log(err));
+        RawbtApi.printJob(job.GSON()).catch((err) => showError(err.message));
     } catch(err) {
-        console.log(err);
+        showError(err.message);
     }
 }
 
@@ -624,11 +649,12 @@ export default function App() {
                         a box and others. Collecting your needs.
                     </Text>
                     <Button title="Print" onPress={demoRichFormat}/>
-                    <Text style={[styles.p, {marginTop: 32, marginBottom: 16}]}>Additional</Text>
+                    <Text style={[styles.p, {marginTop: 32, marginBottom: 16}]}>Bonus demo</Text>
                     <Button title="Receipt example" onPress={demoReceipt}/>
                 </View>
             </ScrollView>
             <StatusBar style="auto"/>
+            <PrinterProgress />
         </SafeAreaView>
     );
 }

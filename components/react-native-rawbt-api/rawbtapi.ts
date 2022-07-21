@@ -390,6 +390,10 @@ export class CommandBarcode implements Command {
     }
 }
 
+export class CommandCut implements Command{
+    command: string = "cut";
+}
+
 /**
  * Draw line
  */
@@ -516,6 +520,15 @@ export interface iRawBTPrintJob {
     template: string;
 }
 
+export type RawBtProgress  = {
+    progress: number; // percent
+    message: string;
+    /**
+     * One from 'success','error','progress','info','canceled','connected'
+     */
+    status: string;
+}
+
 export class RawBTPrintJob implements iRawBTPrintJob {
     // properties for GSON
     copies: number = 1;
@@ -609,6 +622,11 @@ export class RawBTPrintJob implements iRawBTPrintJob {
             .setWidth(attr.width);
 
         this.commands.push(command);
+        return this;
+    }
+
+    cut() {
+        this.commands.push(new CommandCut());
         return this;
     }
 
