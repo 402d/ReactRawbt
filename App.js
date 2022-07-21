@@ -654,7 +654,7 @@ export default function App() {
                 </View>
             </ScrollView>
             <StatusBar style="auto"/>
-            <PrinterProgress />
+            <PrinterProgress height={4} color='blue' />
         </SafeAreaView>
     );
 }

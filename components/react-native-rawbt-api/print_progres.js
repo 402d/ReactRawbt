@@ -45,6 +45,7 @@ export type PrinterProgressProps = {
 
 };
 let subscription ;
+let timer = null;
 
 function PrinterProgress({
                              height = 7,
@@ -56,13 +57,18 @@ function PrinterProgress({
 
 
     useEffect(()=>{
-        const loadingManagerEmitter = new NativeEventEmitter(ReactNativeLoading);
         if(subscription === undefined) {
+            const loadingManagerEmitter = new NativeEventEmitter(ReactNativeLoading);
             subscription = loadingManagerEmitter.addListener("RawBT", ({status,progress,message}) => {
                 setPrinterStatus({status:status,message:message,progress:progress});
             });
         }
     });
+
+
+    if(timer != null){
+        clearTimeout(timer);
+    }
 
     if(printerStatus.progress>0){
         return (
@@ -92,7 +98,7 @@ function PrinterProgress({
     if(printerStatus.status === "info" || printerStatus.status === "connected") {
 
 
-        setTimeout(() => setPrinterStatus({status: 'hide'}), 2000);
+        timer = setTimeout(() => setPrinterStatus({status: 'hide'}), 2000);
 
 
         return (
