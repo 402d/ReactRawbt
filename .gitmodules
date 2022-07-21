@@ -1,0 +1,3 @@
+[submodule "components/react-native-rawbt-api"]
+	path = components/react-native-rawbt-api
+	url = https://github.com/402d/react-native-rawbt-api
